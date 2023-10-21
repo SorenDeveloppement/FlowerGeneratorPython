@@ -3,9 +3,7 @@ import turtle as t
 
 t.speed(0)
 t.colormode(255)
-
-
-# t.hideturtle()
+t.hideturtle()
 
 
 def centered_circle(x: int, y: int, radius: int | float) -> None:
@@ -58,23 +56,37 @@ def flower_pistil(radius: int, color: tuple[int, int, int] = (0, 0, 0),
     t.fillcolor(fill_color)
 
     t.begin_fill()
-    centered_circle(0, 0, radius)
+    # centered_circle(0, 0, radius)
+    t.circle(radius)
     t.end_fill()
 
     t.penup()
 
 
 def create_flower() -> None:
-    nb_petal = 12
-    for i in range(nb_petal):
+    nb_petal1 = 12
+    for i in range(nb_petal1):
         t.setheading(0)
-        t.left(i * (360 // nb_petal))
-        flower_petal(250, (235, 235, 65), (255, 255, 75))
+        t.left(i * (360 // nb_petal1))
+        flower_petal(250, (20, 20, 200), (50, 50, 255))
+
+    for j in range(nb_petal1):
+        t.setheading(0)
+        alpha = (360 // nb_petal1)
+        t.left(j * alpha + alpha / 2)
+        flower_petal(150, (133, 31, 235), (153, 51, 255))
+
+    nb_petal2 = 20
+    for h in range(nb_petal2):
+        t.setheading(0)
+        t.left(h * (360 // nb_petal2))
+        flower_petal(50, (31, 184, 235), (51, 204, 255))
 
     t.setheading(0)
-    t.forward(50)
+    t.forward(15)
+    t.setheading(90)
 
-    flower_pistil(15, (0, 255, 255), (255, 0, 255))
+    flower_pistil(15, (255, 102, 255), (250, 197, 250))
 
 
 create_flower()

@@ -4,6 +4,9 @@ import tkinter as tk
 from tkinter import ttk
 
 
+# TODO: Create an export flower function that return a base64 string with whole of the flower settings
+
+
 class FlowerApp(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
@@ -49,7 +52,37 @@ class TurtleFrame(ttk.Frame):
 class Menu(ttk.Frame):
     def __init__(self, parent: tk.Tk, tu: t.RawTurtle) -> None:
         super().__init__(parent)
-        ttk.Label(self, background="blue").pack(expand=True, fill="both")
+
+        ttk.Label(self, text="Flower settings", font=("Lucida Console", 20)).place(x=0, y=0)
+
+        ttk.Label(self, text="Petal layers:", font=("Lucida Console", 15)).place(x=0, y=55)
+        self.__petal_layers_int = tk.IntVar()
+        self.__petal_layers_int.set(30)
+        self.__petal_layers = ttk.Entry(self, width=10, textvariable=self.__petal_layers_int)
+        self.__petal_layers.place(x=0, y=80)
+
+        # ----------------------------------------------------------------------------------
+        ttk.Label(self, text="Layer settings:", font=("Lucida Console", 15)).place(x=0, y=125)
+        self.__layer_settings_frame = ttk.Frame(self)
+        self.__layer_settings_frame.place(x=0, y=155, relwidth=1, relheight=3 / 8)
+
+        self.__frame_canvas = tk.Canvas(self.__layer_settings_frame)
+
+        self.__frame_scrollbar = ttk.Scrollbar(self.__layer_settings_frame, orient="vertical",
+                                               command=self.__frame_canvas.yview)
+
+        self.__frame_canvas.config(yscrollcommand=self.__frame_scrollbar.set)
+
+        self.__canvas_frame = ttk.Frame(self.__frame_canvas)
+        self.__frame_canvas.grid()  # pack(side="left", fill="both", expand=True) 70
+        self.__frame_canvas.bind("<Configure>", lambda e: self.__frame_canvas.configure(scrollregion=self.__frame_canvas.bbox("all")))
+        self.__frame_canvas.create_window((0, 0), anchor="nw", window=self.__canvas_frame, width=400)
+        self.__frame_scrollbar.grid(row=0, column=1, sticky="ns")  # pack(side="right", fill="y")
+
+        for i in range(self.__petal_layers_int.get()):
+            ttk.Label(self.__canvas_frame, text=i, font=("Lucida Console", 15)).grid(row=i)  # place(x=0, y=i*30)
+        # ----------------------------------------------------------------------------------
+
         self.place(x=800, y=0, relwidth=1 / 3, relheight=1)
 
 

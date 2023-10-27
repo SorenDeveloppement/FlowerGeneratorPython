@@ -57,14 +57,14 @@ class Menu(ttk.Frame):
 
         ttk.Label(self, text="Petal layers:", font=("Lucida Console", 15)).place(x=0, y=55)
         self.__petal_layers_int = tk.IntVar()
-        self.__petal_layers_int.set(30)
+        self.__petal_layers_int.set(3)
         self.__petal_layers = ttk.Entry(self, width=10, textvariable=self.__petal_layers_int)
         self.__petal_layers.place(x=0, y=80)
 
         # ----------------------------------------------------------------------------------
         ttk.Label(self, text="Layer settings:", font=("Lucida Console", 15)).place(x=0, y=125)
         self.__layer_settings_frame = ttk.Frame(self)
-        self.__layer_settings_frame.place(x=0, y=155, relwidth=1, relheight=3 / 8)
+        self.__layer_settings_frame.place(x=0, y=155, relwidth=1, relheight=2 / 3)
 
         self.__frame_canvas = tk.Canvas(self.__layer_settings_frame)
 
@@ -74,13 +74,22 @@ class Menu(ttk.Frame):
         self.__frame_canvas.config(yscrollcommand=self.__frame_scrollbar.set)
 
         self.__canvas_frame = ttk.Frame(self.__frame_canvas)
-        self.__frame_canvas.grid()  # pack(side="left", fill="both", expand=True) 70
-        self.__frame_canvas.bind("<Configure>", lambda e: self.__frame_canvas.configure(scrollregion=self.__frame_canvas.bbox("all")))
+        self.__frame_canvas.grid()
+        self.__frame_canvas.bind("<Configure>",
+                                 lambda e: self.__frame_canvas.configure(scrollregion=self.__frame_canvas.bbox("all")))
         self.__frame_canvas.create_window((0, 0), anchor="nw", window=self.__canvas_frame, width=400)
-        self.__frame_scrollbar.grid(row=0, column=1, sticky="ns")  # pack(side="right", fill="y")
+        self.__frame_scrollbar.grid(row=0, column=1, sticky="ns")
 
-        for i in range(self.__petal_layers_int.get()):
-            ttk.Label(self.__canvas_frame, text=i, font=("Lucida Console", 15)).grid(row=i)  # place(x=0, y=i*30)
+        for i in range(0, self.__petal_layers_int.get() * 8, 8):
+            ttk.Label(self.__canvas_frame, text=f"Layer {i // 8}:", font=("Lucida Console", 15)).grid(row=i * 2)
+            ttk.Label(self.__canvas_frame, text=f"Length:", font=("Lucida Console", 10)).grid(row=i * 2 + 1)
+            ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 2)
+            ttk.Label(self.__canvas_frame, text=f"Height:", font=("Lucida Console", 10)).grid(row=i * 2 + 3)
+            ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 4)
+            ttk.Label(self.__canvas_frame, text=f"Color:", font=("Lucida Console", 10)).grid(row=i * 2 + 5)
+            ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 6)
+            ttk.Label(self.__canvas_frame, text=f"Fill color:", font=("Lucida Console", 10)).grid(row=i * 2 + 7)
+            ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 8)
         # ----------------------------------------------------------------------------------
 
         self.place(x=800, y=0, relwidth=1 / 3, relheight=1)

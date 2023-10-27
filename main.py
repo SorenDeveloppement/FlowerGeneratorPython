@@ -24,7 +24,6 @@ class FlowerApp(tk.Tk):
         self.mainloop()
 
     def set_turtle_settings(self) -> None:
-        # self.turtle_screen.setworldcoordinates(1, 1, 0, 0)
         self.turtle.speed(0)
         self.turtle.hideturtle()
         self.turtle_screen.colormode(255)
@@ -54,16 +53,20 @@ class Menu(ttk.Frame):
         self.place(x=800, y=0, relwidth=1 / 3, relheight=1)
 
 
-def flower_petal(tu: t.RawTurtle, length: int, color: tuple[int, int, int] = (0, 0, 0),
+def flower_petal(tu: t.RawTurtle, length: int, height: int, color: tuple[int, int, int] = (0, 0, 0),
                  fill_color: tuple[int, int, int] = (255, 255, 255)) -> None:
     """
     Draw a flower petal wit a lanceolate shape
     :param tu: The turtle raw screen
     :param length: Length of the petal
+    :param height: Arrow of the arc
     :param color: Outline color of the flower petal
     :param fill_color: Fill color of the flower petal
     :return:
     """
+    # Calculate the radius and the angle of the angle of the arc
+    rayon: float = ((length / 2) ** 2 + height ** 2) / (2 * height)
+    angle: float = math.degrees(2 * math.asin((length / 2) / rayon))
     tu.pendown()
 
     # Set pen settings
@@ -75,18 +78,16 @@ def flower_petal(tu: t.RawTurtle, length: int, color: tuple[int, int, int] = (0,
 
     # Draw the left petal section
     tu.begin_fill()
-    rayon = 2 * length
-    angle = math.degrees(length / (2 * rayon))
-    tu.left(180 - angle)
-    tu.circle(rayon, 2 * angle)
+    tu.left(180 - angle / 2)
+    tu.circle(rayon, angle)
 
     # Draw the right petal section
-    tu.left(180 - angle * 2)
-    tu.circle(rayon, 2 * angle)
+    tu.left(180 - angle)
+    tu.circle(rayon, angle)
     tu.end_fill()
 
     # Draw the central vein of the petal
-    tu.left(180 - angle)
+    tu.left(180 - angle / 2)
     tu.forward(length)
 
     tu.penup()
@@ -128,19 +129,19 @@ def create_flower(tu: t.RawTurtle) -> None:
     for i in range(nb_petal1):
         tu.setheading(0)
         tu.left(i * (360 // nb_petal1))
-        flower_petal(tu, 250, (20, 20, 200), (50, 50, 255))
+        flower_petal(tu, 250, 15, (20, 20, 200), (50, 50, 255))
 
     for j in range(nb_petal1):
         tu.setheading(0)
         alpha = (360 // nb_petal1)
         tu.left(j * alpha + alpha / 2)
-        flower_petal(tu, 150, (133, 31, 235), (153, 51, 255))
+        flower_petal(tu, 150, 15, (133, 31, 235), (153, 51, 255))
 
     nb_petal2 = 20
     for h in range(nb_petal2):
         tu.setheading(0)
         tu.left(h * (360 // nb_petal2))
-        flower_petal(tu, 50, (31, 184, 235), (51, 204, 255))
+        flower_petal(tu, 50, 5, (31, 184, 235), (51, 204, 255))
 
     # Reset the position of the turtle
     tu.setheading(0)

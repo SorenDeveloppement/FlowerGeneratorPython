@@ -18,8 +18,11 @@ def flower_petal(length: int, height: int, color: tuple[int, int, int] = (0, 0, 
     :param fill_color: Fill color of the flower petal
     :return:
     """
-    # Calculate the radius and the angle of the angle of the arc
+    # Calculation of the radius : (c² + t²) / 2 * t
+    # Where c is the half of the chord length and t is the length of the arrow of the arc
     rayon: float = ((length / 2) ** 2 + height ** 2) / (2 * height)
+    # Calculation of the angle : 2 * asin(/R)
+    # Where c is the half of the chord length and R the radius of the circle
     angle: float = math.degrees(2 * math.asin((length / 2) / rayon))
     t.pendown()
 
@@ -76,7 +79,7 @@ def create_flower() -> None:
     Create the whole flower
     :return:
     """
-    nb_petal1 = 12
+    nb_petal1: int = 12
     for i in range(nb_petal1):
         t.setheading(0)
         t.left(i * (360 // nb_petal1))
@@ -88,7 +91,7 @@ def create_flower() -> None:
         t.left(j * alpha + alpha / 2)
         flower_petal(150, 15, (133, 31, 235), (153, 51, 255))
 
-    nb_petal2 = 20
+    nb_petal2: int = 20
     for h in range(nb_petal2):
         t.setheading(0)
         t.left(h * (360 // nb_petal2))

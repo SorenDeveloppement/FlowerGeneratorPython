@@ -57,59 +57,53 @@ class Menu(ttk.Frame):
 
         ttk.Label(self, text="Flower settings", font=("Lucida Console", 20)).place(x=0, y=0)
 
-        ttk.Label(self, text="Petal layers:", font=("Lucida Console", 15)).place(x=0, y=55)
-        self.__petal_layers_int = tk.IntVar()
-        self.__petal_layers_int.set(3)
-        self.__petal_layers = ttk.Entry(self, width=10, textvariable=self.__petal_layers_int, validate="focusout",
-                                        validatecommand=self.__check_valid_entry)
-        self.__petal_layers.place(x=0, y=80)
-
         # ----------------------------------------------------------------------------------
-        ttk.Label(self, text="Layer settings:", font=("Lucida Console", 15)).place(x=0, y=125)
+        ttk.Label(self, text="Layer settings:", font=("Lucida Console", 15)).place(x=0, y=55)
         self.__layer_settings_frame = ttk.Frame(self)
-        self.__layer_settings_frame.place(x=0, y=155, relwidth=1, relheight=2 / 3)
 
-        self.__frame_canvas = tk.Canvas(self.__layer_settings_frame)
+        # Tree scrollbar
+        self.tree_scroll = tk.Scrollbar(self.__layer_settings_frame)
+        self.tree_scroll.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.__frame_scrollbar = ttk.Scrollbar(self.__layer_settings_frame, orient="vertical",
-                                               command=self.__frame_canvas.yview)
+        # Treeview
+        self.__layers_table = ttk.Treeview(self.__layer_settings_frame, yscrollcommand=self.tree_scroll.set)
+        self.__layers_table.place(x=0, y=0, relwidth=0.95, relheight=1)
 
-        self.__frame_canvas.config(yscrollcommand=self.__frame_scrollbar.set)
+        # Tree settings
+        self.__layers_table["column"] = ("layer_id", "layer_length", "layer_height", "layer_color", "layer_fillcolor")
 
-        self.__create_scrollpane_content(self.__petal_layers_int.get())
+        self.__layers_table.column("#0", width=0, stretch=False)
+
+        self.__layers_table.column("layer_id", anchor=tk.CENTER, width=40)
+        self.__layers_table.heading("layer_id", text="ID", anchor=tk.CENTER)
+
+        self.__layers_table.column("layer_length", anchor=tk.CENTER, width=40)
+        self.__layers_table.heading("layer_length", text="Length", anchor=tk.CENTER)
+
+        self.__layers_table.column("layer_height", anchor=tk.CENTER, width=40)
+        self.__layers_table.heading("layer_height", text="Height", anchor=tk.CENTER)
+
+        self.__layers_table.column("layer_color", anchor=tk.CENTER, width=100)
+        self.__layers_table.heading("layer_color", text="Color", anchor=tk.CENTER)
+
+        self.__layers_table.column("layer_fillcolor", anchor=tk.CENTER, width=100)
+        self.__layers_table.heading("layer_fillcolor", text="Fill Color", anchor=tk.CENTER)
+
+        self.__layer_settings_frame.place(x=0, y=105, relwidth=1, relheight=1 / 2)
+
         # ----------------------------------------------------------------------------------
 
         self.place(x=800, y=0, relwidth=1 / 3, relheight=1)
 
     def __check_valid_entry(self):
         assert self.__petal_layers_int.get() != ""
-        if int(self.__petal_layers_int.get()) >= 10:
+        if self.__petal_layers_int.get() >= 10:
+            print("ok")
             raise ValueError("You must enter an integer value !")
         else:
-            self.__create_scrollpane_content(self.__petal_layers_int.get())
+            print(self.__petal_layers_int.get())
+
         return True
-
-    def __create_scrollpane_content(self, layer_number: int):
-        self.__layer_values.clear()
-        self.__frame_canvas.delete("all")
-
-        self.__canvas_frame = ttk.Frame(self.__frame_canvas)
-        self.__frame_canvas.grid()
-        self.__frame_canvas.bind("<Configure>",
-                                 lambda e: self.__frame_canvas.configure(scrollregion=self.__frame_canvas.bbox("all")))
-        self.__frame_canvas.create_window((0, 0), anchor="nw", window=self.__canvas_frame, width=400)
-        self.__frame_scrollbar.grid(row=0, column=1, sticky="ns")
-
-        for i in range(0, layer_number * 8, 8):
-            ttk.Label(self.__canvas_frame, text=f"Layer {i // 8 + 1}:", font=("Lucida Console", 15)).grid(row=i * 2)
-            ttk.Label(self.__canvas_frame, text=f"Length:", font=("Lucida Console", 10)).grid(row=i * 2 + 1)
-            ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 2)
-            ttk.Label(self.__canvas_frame, text=f"Height:", font=("Lucida Console", 10)).grid(row=i * 2 + 3)
-            ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 4)
-            ttk.Label(self.__canvas_frame, text=f"Color:", font=("Lucida Console", 10)).grid(row=i * 2 + 5)
-            ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 6)
-            ttk.Label(self.__canvas_frame, text=f"Fill color:", font=("Lucida Console", 10)).grid(row=i * 2 + 7)
-            ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 8)
 
 
 def flower_petal(tu: t.RawTurtle, length: int, height: int, color: tuple[int, int, int] = (0, 0, 0),

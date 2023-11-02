@@ -1,20 +1,51 @@
-from tkinter import *
+from tkinter import ttk
+import tkinter as tk
 
-root = Tk()
-root.geometry("950x600")
 
-# create canvas
-canvas = Canvas(root, width=932, height=600, borderwidth=0, highlightthickness=0, bg="black")
-vsb = Scrollbar(root, orient="vertical", command=canvas.yview)
-canvas.configure(yscrollcommand=vsb.set)
-# create a scrollbar
-f = Frame(canvas)  # 1
-canvas.grid()
-canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))  # 2
-canvas.create_window((0, 0), anchor='nw', window=f, width=932)  # 3
-vsb.grid(row=0, column=1, sticky='ns')
-# Test the ability to scroll
-for x in range(300):
-    Label(f, text="test").grid(row=x)
+def __create_scrollpane_content(self, layer_number: int):
+    self.__layer_values.clear()
+    self.__frame_canvas.delete("all")
 
-root.mainloop()
+    self.__canvas_frame = ttk.Frame(self.__frame_canvas)
+    self.__frame_canvas.grid()
+    self.__frame_canvas.bind("<Configure>",
+                             lambda e: self.__frame_canvas.configure(scrollregion=self.__frame_canvas.bbox("all")))
+    self.__frame_canvas.create_window((0, 0), anchor="nw", window=self.__canvas_frame, width=400)
+    self.__frame_scrollbar.grid(row=0, column=1, sticky="ns")
+
+    for i in range(0, layer_number * 8, 8):
+        ttk.Label(self.__canvas_frame, text=f"Layer {i // 8 + 1}:", font=("Lucida Console", 15)).grid(row=i * 2)
+        ttk.Label(self.__canvas_frame, text=f"Length:", font=("Lucida Console", 10)).grid(row=i * 2 + 1)
+        ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 2)
+        ttk.Label(self.__canvas_frame, text=f"Height:", font=("Lucida Console", 10)).grid(row=i * 2 + 3)
+        ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 4)
+        ttk.Label(self.__canvas_frame, text=f"Color:", font=("Lucida Console", 10)).grid(row=i * 2 + 5)
+        ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 6)
+        ttk.Label(self.__canvas_frame, text=f"Fill color:", font=("Lucida Console", 10)).grid(row=i * 2 + 7)
+        ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 8)
+
+
+def __create_scrollpane_content(self, layer_number: int):
+    self.__layer_values.clear()
+    if self.__frame_canvas:
+        self.__frame_canvas.destroy()
+
+    self.__frame_canvas = tk.Canvas(self.__layer_settings_frame)
+
+    self.__canvas_frame = ttk.Frame(self.__frame_canvas)
+    self.__frame_canvas.grid()
+    self.__frame_canvas.bind("<Configure>",
+                             lambda e: self.__frame_canvas.configure(scrollregion=self.__frame_canvas.bbox("all")))
+    self.__frame_canvas.create_window((0, 0), anchor="nw", window=self.__canvas_frame, width=400)
+    self.__frame_scrollbar.grid(row=0, column=1, sticky="ns")
+
+    for i in range(0, layer_number * 8, 8):
+        ttk.Label(self.__canvas_frame, text=f"Layer {i // 8 + 1}:", font=("Lucida Console", 15)).grid(row=i * 2)
+        ttk.Label(self.__canvas_frame, text=f"Length:", font=("Lucida Console", 10)).grid(row=i * 2 + 1)
+        ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 2)
+        ttk.Label(self.__canvas_frame, text=f"Height:", font=("Lucida Console", 10)).grid(row=i * 2 + 3)
+        ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 4)
+        ttk.Label(self.__canvas_frame, text=f"Color:", font=("Lucida Console", 10)).grid(row=i * 2 + 5)
+        ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 6)
+        ttk.Label(self.__canvas_frame, text=f"Fill color:", font=("Lucida Console", 10)).grid(row=i * 2 + 7)
+        ttk.Entry(self.__canvas_frame, width=30).grid(row=i * 2 + 8)

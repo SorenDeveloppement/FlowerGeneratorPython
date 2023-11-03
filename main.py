@@ -112,10 +112,13 @@ class Menu(ttk.Frame):
         self.__fillcolor_entry.place(x=271, y=560, relwidth=0.30)
 
         self.__add_button = ttk.Button(self, text="Add", command=self.__add_input)
-        self.__add_button.place(x=0, y=590, relwidth=0.5)
+        self.__add_button.place(x=0, y=590, relwidth=1 / 3)
 
-        self.__remove_button = ttk.Button(self, text="Remove")  # TODO: Add command
-        self.__remove_button.place(x=200, y=590, relwidth=0.5)
+        self.__modify_button = ttk.Button(self, text="Modify", command=self.__add_input)  # TODO: Change the commend function
+        self.__modify_button.place(x=133, y=590, relwidth=1 / 3)
+
+        self.__remove_button = ttk.Button(self, text="Remove", command=self.__remove_input)
+        self.__remove_button.place(x=266, y=590, relwidth=1 / 3)
 
         self.place(x=800, y=0, relwidth=1 / 3, relheight=1)
 
@@ -137,13 +140,27 @@ class Menu(ttk.Frame):
 
     def __add_input(self):
         """
-        Add the entries to the tree view
+        Add the item to the tree view
         :return:
         """
         if self.__check_valid_entries():
             self.__layers_table.insert(parent='', index="end", text='', values=(
                 len(self.__layers_table.get_children()), self.__length_entry_var.get(), self.__height_entry_var.get(),
                 self.__color_entry_var.get(), self.__fillcolor_entry_var.get()))
+
+    def __modify_input(self):
+        """
+        Modify the selected item in the tree view
+        :return:
+        """
+
+    def __remove_input(self):
+        """
+        Remove the selected item in the tree view
+        :return:
+        """
+        if self.__layers_table.focus():
+            self.__layers_table.delete(self.__layers_table.focus())
 
 
 def flower_petal(tu: t.RawTurtle, length: int, height: int, color: tuple[int, int, int] = (0, 0, 0),

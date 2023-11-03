@@ -12,7 +12,7 @@ class FlowerApp(tk.Tk):
         super().__init__()
         self.title("Lanceolate Flower Generation")
         self.geometry("1200x800")
-        self.resizable = False
+        self.resizable(False, False)
 
         self.turtle_frame = TurtleFrame(self)
         self.turtle = self.turtle_frame.get_turtle()
@@ -57,7 +57,7 @@ class Menu(ttk.Frame):
 
         ttk.Label(self, text="Flower settings", font=("Lucida Console", 20)).place(x=0, y=0)
 
-        # ----------------------------------------------------------------------------------
+        # ___________________________________Tree View___________________________________
         ttk.Label(self, text="Layer settings:", font=("Lucida Console", 15)).place(x=0, y=55)
         self.__layer_settings_frame = ttk.Frame(self)
 
@@ -91,19 +91,59 @@ class Menu(ttk.Frame):
 
         self.__layer_settings_frame.place(x=0, y=105, relwidth=1, relheight=1 / 2)
 
-        # ----------------------------------------------------------------------------------
+        # ______________________________________________________________________________
+
+        ttk.Label(self, text="Layer input:", font=("Lucida Console", 15)).place(x=0, y=525)
+
+        self.__length_entry_var = tk.IntVar()
+        self.__length_entry = ttk.Entry(self, textvariable=self.__length_entry_var)
+        self.__length_entry.place(x=0, y=560, relwidth=0.17)
+
+        self.__height_entry_var = tk.IntVar()
+        self.__height_entry = ttk.Entry(self, textvariable=self.__height_entry_var)
+        self.__height_entry.place(x=73, y=560, relwidth=0.17)
+
+        self.__color_entry_var = tk.StringVar()
+        self.__color_entry = ttk.Entry(self, textvariable=self.__color_entry_var)
+        self.__color_entry.place(x=146, y=560, relwidth=0.30)
+
+        self.__fillcolor_entry_var = tk.StringVar()
+        self.__fillcolor_entry = ttk.Entry(self, textvariable=self.__fillcolor_entry_var)
+        self.__fillcolor_entry.place(x=271, y=560, relwidth=0.30)
+
+        self.__add_button = ttk.Button(self, text="Add", command=self.__add_input)
+        self.__add_button.place(x=0, y=590, relwidth=0.5)
+
+        self.__remove_button = ttk.Button(self, text="Remove")  # TODO: Add command
+        self.__remove_button.place(x=200, y=590, relwidth=0.5)
 
         self.place(x=800, y=0, relwidth=1 / 3, relheight=1)
 
-    def __check_valid_entry(self):
-        assert self.__petal_layers_int.get() != ""
-        if self.__petal_layers_int.get() >= 10:
-            print("ok")
-            raise ValueError("You must enter an integer value !")
+    def __check_valid_entries(self):
+        """
+        Check if the entries have a correct value inside
+        :return:
+        """
+        length_val = self.__length_entry_var.get()
+        height_val = self.__height_entry_var.get()
+        color_val = self.__color_entry_var.get()
+        fillcolor_val = self.__fillcolor_entry_var.get()
+        if '' not in (color_val, fillcolor_val) \
+                and (len(color_val.split(',')) and len(fillcolor_val.split(','))) == 3 \
+                and (type(length_val) and type(height_val)) == int:
+            return True
         else:
-            print(self.__petal_layers_int.get())
+            raise (ValueError("The values on the entries aren't correct"))
 
-        return True
+    def __add_input(self):
+        """
+        Add the entries to the tree view
+        :return:
+        """
+        if self.__check_valid_entries():
+            self.__layers_table.insert(parent='', index="end", text='', values=(
+                len(self.__layers_table.get_children()), self.__length_entry_var.get(), self.__height_entry_var.get(),
+                self.__color_entry_var.get(), self.__fillcolor_entry_var.get()))
 
 
 def flower_petal(tu: t.RawTurtle, length: int, height: int, color: tuple[int, int, int] = (0, 0, 0),

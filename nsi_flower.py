@@ -11,7 +11,6 @@ def flower_petal(length: int, height: int, color: tuple[int, int, int] = (0, 0, 
                  fill_color: tuple[int, int, int] = (255, 255, 255)) -> None:
     """
     Draw a flower petal wit a lanceolate shape
-    :param tu: The turtle raw screen
     :param length: Length of the petal
     :param height: Arrow of the arc
     :param color: Outline color of the flower petal

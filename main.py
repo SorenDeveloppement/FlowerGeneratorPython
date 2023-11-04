@@ -22,8 +22,6 @@ class FlowerApp(tk.Tk):
 
         self.set_turtle_settings()
 
-        create_flower(self.turtle)
-
         self.mainloop()
 
     def set_turtle_settings(self) -> None:
@@ -53,7 +51,7 @@ class Menu(ttk.Frame):
     def __init__(self, parent: tk.Tk, tu: t.RawTurtle) -> None:
         super().__init__(parent)
 
-        self.__tu = tu
+        self.tu = tu
         self.__layer_values: list[list[int | str]] = []
 
         ttk.Label(self, text="Flower settings", font=("Lucida Console", 20)).place(x=0, y=0)
@@ -67,35 +65,35 @@ class Menu(ttk.Frame):
         self.tree_scroll.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Treeview
-        self.__layers_table = ttk.Treeview(self.__layer_settings_frame, yscrollcommand=self.tree_scroll.set)
-        self.__layers_table.place(x=0, y=0, relwidth=0.95, relheight=1)
+        self.layers_table = ttk.Treeview(self.__layer_settings_frame, yscrollcommand=self.tree_scroll.set)
+        self.layers_table.place(x=0, y=0, relwidth=0.95, relheight=1)
 
         # Tree settings
-        self.__layers_table["column"] = (
+        self.layers_table["column"] = (
             "layer_id", "layer_length", "layer_height", "layer_color", "layer_fillcolor", "nb_petal", "lag")
 
-        self.__layers_table.column("#0", width=0, stretch=False)
+        self.layers_table.column("#0", width=0, stretch=False)
 
-        self.__layers_table.column("layer_id", anchor=tk.CENTER, width=40)
-        self.__layers_table.heading("layer_id", text="ID", anchor=tk.CENTER)
+        self.layers_table.column("layer_id", anchor=tk.CENTER, width=40)
+        self.layers_table.heading("layer_id", text="ID", anchor=tk.CENTER)
 
-        self.__layers_table.column("layer_length", anchor=tk.CENTER, width=40)
-        self.__layers_table.heading("layer_length", text="Length", anchor=tk.CENTER)
+        self.layers_table.column("layer_length", anchor=tk.CENTER, width=40)
+        self.layers_table.heading("layer_length", text="Length", anchor=tk.CENTER)
 
-        self.__layers_table.column("layer_height", anchor=tk.CENTER, width=40)
-        self.__layers_table.heading("layer_height", text="Height", anchor=tk.CENTER)
+        self.layers_table.column("layer_height", anchor=tk.CENTER, width=40)
+        self.layers_table.heading("layer_height", text="Height", anchor=tk.CENTER)
 
-        self.__layers_table.column("layer_color", anchor=tk.CENTER, width=100)
-        self.__layers_table.heading("layer_color", text="Color", anchor=tk.CENTER)
+        self.layers_table.column("layer_color", anchor=tk.CENTER, width=100)
+        self.layers_table.heading("layer_color", text="Color", anchor=tk.CENTER)
 
-        self.__layers_table.column("layer_fillcolor", anchor=tk.CENTER, width=100)
-        self.__layers_table.heading("layer_fillcolor", text="Fill Color", anchor=tk.CENTER)
+        self.layers_table.column("layer_fillcolor", anchor=tk.CENTER, width=100)
+        self.layers_table.heading("layer_fillcolor", text="Fill Color", anchor=tk.CENTER)
 
-        self.__layers_table.column("nb_petal", anchor=tk.CENTER, width=50)
-        self.__layers_table.heading("nb_petal", text="Petal Number", anchor=tk.CENTER)
+        self.layers_table.column("nb_petal", anchor=tk.CENTER, width=50)
+        self.layers_table.heading("nb_petal", text="Petal Number", anchor=tk.CENTER)
 
-        self.__layers_table.column("lag", anchor=tk.CENTER, width=50)
-        self.__layers_table.heading("lag", text="Lag °", anchor=tk.CENTER)
+        self.layers_table.column("lag", anchor=tk.CENTER, width=50)
+        self.layers_table.heading("lag", text="Lag °", anchor=tk.CENTER)
 
         self.__layer_settings_frame.place(x=0, y=105, relwidth=1, relheight=1 / 2)
 
@@ -103,65 +101,79 @@ class Menu(ttk.Frame):
 
         ttk.Label(self, text="Layer input:", font=("Lucida Console", 15)).place(x=0, y=525)
 
+        ttk.Label(self, text="Length", font=("Lucida Console", 10)).place(x=0, y=565)
+        ttk.Label(self, text="Height", font=("Lucida Console", 10)).place(x=90, y=565)
+        ttk.Label(self, text="Color", font=("Lucida Console", 10)).place(x=180, y=565)
+        ttk.Label(self, text="Fill color", font=("Lucida Console", 10)).place(x=300, y=565)
+        ttk.Label(self, text="Nb petal", font=("Lucida Console", 10)).place(x=420, y=565)
+        ttk.Label(self, text="Lag", font=("Lucida Console", 10)).place(x=510, y=565)
+
         self.__length_entry_var = tk.IntVar()
         self.__length_entry = ttk.Entry(self, textvariable=self.__length_entry_var)
-        self.__length_entry.place(x=0, y=560, relwidth=0.15)
+        self.__length_entry.place(x=0, y=590, relwidth=0.15)
 
         self.__height_entry_var = tk.IntVar()
         self.__height_entry = ttk.Entry(self, textvariable=self.__height_entry_var)
-        self.__height_entry.place(x=90, y=560, relwidth=0.15)
+        self.__height_entry.place(x=90, y=590, relwidth=0.15)
 
         self.__color_entry_var = tk.StringVar()
         self.__color_entry = ttk.Entry(self, textvariable=self.__color_entry_var)
-        self.__color_entry.place(x=180, y=560, relwidth=0.2)
+        self.__color_entry.place(x=180, y=590, relwidth=0.2)
 
         self.__fillcolor_entry_var = tk.StringVar()
         self.__fillcolor_entry = ttk.Entry(self, textvariable=self.__fillcolor_entry_var)
-        self.__fillcolor_entry.place(x=300, y=560, relwidth=0.2)
+        self.__fillcolor_entry.place(x=300, y=590, relwidth=0.2)
 
         self.__petal_number_entry_var = tk.IntVar()
         self.__petal_number_entry = ttk.Entry(self, textvariable=self.__petal_number_entry_var)
-        self.__petal_number_entry.place(x=420, y=560, relwidth=0.15)
+        self.__petal_number_entry.place(x=420, y=590, relwidth=0.15)
 
         self.__lag_entry_var = tk.IntVar()
         self.__lag_entry = ttk.Entry(self, textvariable=self.__lag_entry_var)
-        self.__lag_entry.place(x=510, y=560, relwidth=0.13)
+        self.__lag_entry.place(x=510, y=590, relwidth=0.13)
 
         self.__add_button = ttk.Button(self, text="Add", command=self.__add_input)
-        self.__add_button.place(x=0, y=590, relwidth=0.24)
+        self.__add_button.place(x=0, y=620, relwidth=0.24)
 
         self.__modify_button = ttk.Button(self, text="Modify", command=self.__modify_input)
-        self.__modify_button.place(x=148, y=590, relwidth=0.24)
+        self.__modify_button.place(x=148, y=620, relwidth=0.24)
 
         self.__remove_button = ttk.Button(self, text="Remove", command=self.__remove_input)
-        self.__remove_button.place(x=296, y=590, relwidth=0.24)
+        self.__remove_button.place(x=296, y=620, relwidth=0.24)
 
         self.__clear_button = ttk.Button(self, text="Clear", command=self.__clear_inputs)
-        self.__clear_button.place(x=444, y=590, relwidth=0.24)
+        self.__clear_button.place(x=444, y=620, relwidth=0.24)
 
         # ______________________________________________________________________________
 
-        ttk.Label(self, text="Pistil settings:", font=("Lucida Console", 15)).place(x=0, y=630)
+        ttk.Label(self, text="Pistil settings:", font=("Lucida Console", 15)).place(x=0, y=660)
 
-        ttk.Label(self, text="Radius", font=("Lucida Console", 10)).place(x=0, y=660)
-        ttk.Label(self, text="Color", font=("Lucida Console", 10)).place(x=197, y=660)
-        ttk.Label(self, text="Fill color", font=("Lucida Console", 10)).place(x=394, y=660)
+        ttk.Label(self, text="Radius", font=("Lucida Console", 10)).place(x=0, y=690)
+        ttk.Label(self, text="Color", font=("Lucida Console", 10)).place(x=197, y=690)
+        ttk.Label(self, text="Fill color", font=("Lucida Console", 10)).place(x=394, y=690)
 
-        self.__pistil_radius_entry_var = tk.IntVar()
-        self.__pistil_radius_entry = ttk.Entry(self, textvariable=self.__pistil_radius_entry_var)
-        self.__pistil_radius_entry.place(x=0, y=680, relwidth=0.3)
+        self.pistil_radius_entry_var = tk.IntVar()
+        self.__pistil_radius_entry = ttk.Entry(self, textvariable=self.pistil_radius_entry_var)
+        self.__pistil_radius_entry.place(x=0, y=710, relwidth=0.3)
 
-        self.__pistil_color_entry_var = tk.StringVar()
-        self.__pistil_color_entry = ttk.Entry(self, textvariable=self.__pistil_color_entry_var)
-        self.__pistil_color_entry.place(x=197, y=680, relwidth=0.3)
+        self.pistil_color_entry_var = tk.StringVar()
+        self.__pistil_color_entry = ttk.Entry(self, textvariable=self.pistil_color_entry_var)
+        self.__pistil_color_entry.place(x=197, y=710, relwidth=0.3)
 
-        self.__pistil_fillcolor_entry_var = tk.StringVar()
-        self.__pistil_fillcolor_entry = ttk.Entry(self, textvariable=self.__pistil_fillcolor_entry_var)
-        self.__pistil_fillcolor_entry.place(x=394, y=680, relwidth=0.3)
+        self.pistil_fillcolor_entry_var = tk.StringVar()
+        self.__pistil_fillcolor_entry = ttk.Entry(self, textvariable=self.pistil_fillcolor_entry_var)
+        self.__pistil_fillcolor_entry.place(x=394, y=710, relwidth=0.3)
 
         # ______________________________________________________________________________
 
         self.__create_flower_button = ttk.Button(self, text="Create Flower", command=self.create_flower)
+        self.__create_flower_button.place(x=0, y=770, relwidth=0.3)
+
+        self.__create_flower_button = ttk.Button(self, text="Export Flower", command=self.create_flower)
+        self.__create_flower_button.place(x=197, y=770, relwidth=0.3)
+
+        self.__create_flower_button = ttk.Button(self, text="Import Flower", command=self.create_flower)
+        self.__create_flower_button.place(x=394, y=770, relwidth=0.3)
 
         # ______________________________________________________________________________
 
@@ -190,9 +202,9 @@ class Menu(ttk.Frame):
         Check if the entries have a correct value inside
         :return:
         """
-        radius_val = self.__pistil_radius_entry_var.get()
-        color_val = self.__pistil_color_entry_var.get()
-        fillcolor_val = self.__pistil_fillcolor_entry_var.get()
+        radius_val = self.pistil_radius_entry_var.get()
+        color_val = self.pistil_color_entry_var.get()
+        fillcolor_val = self.pistil_fillcolor_entry_var.get()
 
         if '' not in (color_val, fillcolor_val) \
                 and type(radius_val) == int:
@@ -206,8 +218,8 @@ class Menu(ttk.Frame):
         :return:
         """
         if self.__check_valid_petal_entries():
-            self.__layers_table.insert(parent='', index="end", text='', values=(
-                len(self.__layers_table.get_children()), self.__length_entry_var.get(), self.__height_entry_var.get(),
+            self.layers_table.insert(parent='', index="end", text='', values=(
+                len(self.layers_table.get_children()), self.__length_entry_var.get(), self.__height_entry_var.get(),
                 self.__color_entry_var.get(), self.__fillcolor_entry_var.get(), self.__petal_number_entry_var.get(),
                 self.__lag_entry_var.get()))
 
@@ -216,11 +228,11 @@ class Menu(ttk.Frame):
         Modify the selected item in the tree view
         :return:
         """
-        focussed = self.__layers_table.focus()
+        focussed = self.layers_table.focus()
         if focussed:
             if self.__check_valid_petal_entries():
-                self.__layers_table.item(focussed, values=(
-                    self.__layers_table.item(focussed)["values"][0], self.__length_entry_var.get(),
+                self.layers_table.item(focussed, values=(
+                    self.layers_table.item(focussed)["values"][0], self.__length_entry_var.get(),
                     self.__height_entry_var.get(),
                     self.__color_entry_var.get(), self.__fillcolor_entry_var.get(), self.__petal_number_entry_var.get(),
                     self.__lag_entry_var.get()))
@@ -230,8 +242,8 @@ class Menu(ttk.Frame):
         Remove the selected item in the tree view
         :return:
         """
-        if self.__layers_table.focus():
-            self.__layers_table.delete(self.__layers_table.focus())
+        if self.layers_table.focus():
+            self.layers_table.delete(self.layers_table.focus())
             self.__actualize_table_ids()
 
     def __clear_inputs(self):
@@ -239,22 +251,29 @@ class Menu(ttk.Frame):
         Clear the treeview
         :return:
         """
-        for child in self.__layers_table.get_children():
-            self.__layers_table.delete(child)
+        for child in self.layers_table.get_children():
+            self.layers_table.delete(child)
 
     def __actualize_table_ids(self):
         """
         Actualize the tree view ids
         :return:
         """
-        for i, child in enumerate(self.__layers_table.get_children()):
-            child_item = self.__layers_table.item(child)["values"]
-            self.__layers_table.item(child, values=(
+        for i, child in enumerate(self.layers_table.get_children()):
+            child_item = self.layers_table.item(child)["values"]
+            self.layers_table.item(child, values=(
                 i, child_item[1], child_item[2], child_item[3], child_item[4], child_item[5], child_item[6]))
 
     def create_flower(self):
+        """
+        Create the flower
+        :return:
+        """
+        self.tu.goto(0, 0)
+        self.tu.setheading(0)
+        self.tu.clear()
         if self.__check_valid_pistil_entries():
-            create_flower(self.__tu)
+            create_flower(self)
 
 
 def flower_petal(tu: t.RawTurtle, length: int, height: int, color: tuple[int, int, int] = (0, 0, 0),
@@ -325,36 +344,37 @@ def flower_pistil(tu: t.RawTurtle, radius: int, color: tuple[int, int, int] = (0
     tu.penup()
 
 
-def create_flower(tu: t.RawTurtle) -> None:
+def create_flower(menu: Menu) -> None:
     """
     Create the whole flower
-    :param tu: The turtle raw screen
+    :param menu: Menu class to access to some values
     :return:
     """
-    nb_petal1 = 12
-    for i in range(nb_petal1):
-        tu.setheading(0)
-        tu.left(i * (360 // nb_petal1))
-        flower_petal(tu, 250, 15, (20, 20, 200), (50, 50, 255))
+    tu: t.RawTurtle = menu.tu
+    layers_table: ttk.Treeview = menu.layers_table
 
-    for j in range(nb_petal1):
-        tu.setheading(0)
-        alpha = (360 // nb_petal1)
-        tu.left(j * alpha + alpha / 2)
-        flower_petal(tu, 150, 15, (133, 31, 235), (153, 51, 255))
+    for child in layers_table.get_children():
+        item = layers_table.item(child)
+        petal_number: int = item["values"][5]
+        petal_color_rgb: list[str] = item["values"][3].split(',')
+        petal_fillcolor_rgb: list[str] = item["values"][4].split(',')
+        for i in range(petal_number):
+            tu.setheading(0)
+            tu.left(i * (360 // petal_number) + item["values"][6])
+            flower_petal(tu, item["values"][1], item["values"][2],
+                         (int(petal_color_rgb[0]), int(petal_color_rgb[1]), int(petal_color_rgb[2])),
+                         (int(petal_fillcolor_rgb[0]), int(petal_fillcolor_rgb[1]), int(petal_fillcolor_rgb[2])))
 
-    nb_petal2 = 20
-    for h in range(nb_petal2):
-        tu.setheading(0)
-        tu.left(h * (360 // nb_petal2))
-        flower_petal(tu, 50, 5, (31, 184, 235), (51, 204, 255))
+    pistil_radius: int = menu.pistil_radius_entry_var.get()
+    pistil_color: list[str] = menu.pistil_color_entry_var.get().split(',')
+    pistil_fillcolor: list[str] = menu.pistil_fillcolor_entry_var.get().split(',')
 
-    # Reset the position of the turtle
     tu.setheading(0)
-    tu.forward(15)
+    tu.forward(pistil_radius)
     tu.setheading(90)
 
-    flower_pistil(tu, 15, (255, 102, 255), (250, 197, 250))
+    flower_pistil(tu, pistil_radius, (int(pistil_color[0]), int(pistil_color[1]), int(pistil_color[2])),
+                  (int(pistil_fillcolor[0]), int(pistil_fillcolor[1]), int(pistil_fillcolor[2])))
 
 
 if __name__ == '__main__':

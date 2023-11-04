@@ -4,10 +4,7 @@ import turtle as t
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
-from PIL import ImageGrab
-
-
-# TODO: Create an export flower function that return a base64 string with whole of the flower settings
+from PIL import ImageGrab, Image
 
 
 class FlowerApp(tk.Tk):
@@ -17,17 +14,21 @@ class FlowerApp(tk.Tk):
         self.geometry("1400x800")
         self.resizable(False, False)
 
-        self.turtle_frame = TurtleFrame(self)
-        self.turtle = self.turtle_frame.get_turtle()
-        self.turtle_screen = self.turtle_frame.get_turtle_screen()
+        self.turtle_frame: TurtleFrame = TurtleFrame(self)
+        self.turtle: t.RawTurtle = self.turtle_frame.get_turtle()
+        self.turtle_screen: t.TurtleScreen = self.turtle_frame.get_turtle_screen()
 
-        self.menu = Menu(self, self.turtle, self.turtle_screen)
+        self.menu: Menu = Menu(self, self.turtle, self.turtle_screen)
 
         self.set_turtle_settings()
 
         self.mainloop()
 
     def set_turtle_settings(self) -> None:
+        """
+        Set the turtle settings
+        :return:
+        """
         self.turtle.speed(0)
         self.turtle.hideturtle()
         self.turtle_screen.colormode(255)
@@ -37,16 +38,24 @@ class FlowerApp(tk.Tk):
 class TurtleFrame(ttk.Frame):
     def __init__(self, parent: tk.Tk) -> None:
         super().__init__(parent)
-        self.__canvas = tk.Canvas(self, width=800, height=800)
+        self.__canvas: tk.Canvas = tk.Canvas(self, width=800, height=800)
         self.__canvas.pack()
-        self.__turtle_screen = t.TurtleScreen(self.__canvas)
-        self.__turtle = t.RawTurtle(self.__turtle_screen)
+        self.__turtle_screen: t.TurtleScreen = t.TurtleScreen(self.__canvas)
+        self.__turtle: t.RawTurtle = t.RawTurtle(self.__turtle_screen)
         self.place(x=0, y=0)
 
     def get_turtle(self) -> t.RawTurtle:
+        """
+        Return the turtle
+        :return:
+        """
         return self.__turtle
 
     def get_turtle_screen(self) -> t.TurtleScreen:
+        """
+        Return the turtle screen
+        :return:
+        """
         return self.__turtle_screen
 
 
@@ -54,23 +63,23 @@ class Menu(ttk.Frame):
     def __init__(self, parent: tk.Tk, tu: t.RawTurtle, screen: t.TurtleScreen) -> None:
         super().__init__(parent)
 
-        self.tu = tu
-        self.__parent = parent
-        self.__turtle_screen = screen
+        self.tu: t.RawTurtle = tu
+        self.__parent: tk.Tk = parent
+        self.__turtle_screen: t.TurtleScreen = screen
         self.__layer_values: list[list[int | str]] = []
 
         ttk.Label(self, text="Flower settings", font=("Lucida Console", 20)).place(x=0, y=0)
 
         # ___________________________________Tree View___________________________________
         ttk.Label(self, text="Layer settings:", font=("Lucida Console", 15)).place(x=0, y=55)
-        self.__layer_settings_frame = ttk.Frame(self)
+        self.__layer_settings_frame: ttk.Frame = ttk.Frame(self)
 
         # Tree scrollbar
-        self.tree_scroll = tk.Scrollbar(self.__layer_settings_frame)
+        self.tree_scroll: tk.Scrollbar = tk.Scrollbar(self.__layer_settings_frame)
         self.tree_scroll.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Treeview
-        self.layers_table = ttk.Treeview(self.__layer_settings_frame, yscrollcommand=self.tree_scroll.set)
+        self.layers_table: ttk.Treeview = ttk.Treeview(self.__layer_settings_frame, yscrollcommand=self.tree_scroll.set)
         self.layers_table.place(x=0, y=0, relwidth=0.95, relheight=1)
 
         # Tree settings
@@ -113,40 +122,40 @@ class Menu(ttk.Frame):
         ttk.Label(self, text="Nb petal", font=("Lucida Console", 10)).place(x=420, y=565)
         ttk.Label(self, text="Lag", font=("Lucida Console", 10)).place(x=510, y=565)
 
-        self.__length_entry_var = tk.IntVar()
-        self.__length_entry = ttk.Entry(self, textvariable=self.__length_entry_var)
+        self.__length_entry_var: tk.IntVar = tk.IntVar()
+        self.__length_entry: ttk.Entry = ttk.Entry(self, textvariable=self.__length_entry_var)
         self.__length_entry.place(x=0, y=590, relwidth=0.15)
 
-        self.__height_entry_var = tk.IntVar()
-        self.__height_entry = ttk.Entry(self, textvariable=self.__height_entry_var)
+        self.__height_entry_var: tk.IntVar = tk.IntVar()
+        self.__height_entry: ttk.Entry = ttk.Entry(self, textvariable=self.__height_entry_var)
         self.__height_entry.place(x=90, y=590, relwidth=0.15)
 
-        self.__color_entry_var = tk.StringVar()
-        self.__color_entry = ttk.Entry(self, textvariable=self.__color_entry_var)
+        self.__color_entry_var: tk.StringVar = tk.StringVar()
+        self.__color_entry: ttk.Entry = ttk.Entry(self, textvariable=self.__color_entry_var)
         self.__color_entry.place(x=180, y=590, relwidth=0.2)
 
-        self.__fillcolor_entry_var = tk.StringVar()
-        self.__fillcolor_entry = ttk.Entry(self, textvariable=self.__fillcolor_entry_var)
+        self.__fillcolor_entry_var: tk.StringVar = tk.StringVar()
+        self.__fillcolor_entry: ttk.Entry = ttk.Entry(self, textvariable=self.__fillcolor_entry_var)
         self.__fillcolor_entry.place(x=300, y=590, relwidth=0.2)
 
-        self.__petal_number_entry_var = tk.IntVar()
-        self.__petal_number_entry = ttk.Entry(self, textvariable=self.__petal_number_entry_var)
+        self.__petal_number_entry_var: tk.IntVar = tk.IntVar()
+        self.__petal_number_entry: ttk.Entry = ttk.Entry(self, textvariable=self.__petal_number_entry_var)
         self.__petal_number_entry.place(x=420, y=590, relwidth=0.15)
 
-        self.__lag_entry_var = tk.IntVar()
-        self.__lag_entry = ttk.Entry(self, textvariable=self.__lag_entry_var)
+        self.__lag_entry_var: tk.IntVar = tk.IntVar()
+        self.__lag_entry: ttk.Entry = ttk.Entry(self, textvariable=self.__lag_entry_var)
         self.__lag_entry.place(x=510, y=590, relwidth=0.13)
 
-        self.__add_button = ttk.Button(self, text="Add", command=self.__add_input)
+        self.__add_button: ttk.Button = ttk.Button(self, text="Add", command=self.__add_input)
         self.__add_button.place(x=0, y=620, relwidth=0.24)
 
-        self.__modify_button = ttk.Button(self, text="Modify", command=self.__modify_input)
+        self.__modify_button: ttk.Button = ttk.Button(self, text="Modify", command=self.__modify_input)
         self.__modify_button.place(x=148, y=620, relwidth=0.24)
 
-        self.__remove_button = ttk.Button(self, text="Remove", command=self.__remove_input)
+        self.__remove_button: ttk.Button = ttk.Button(self, text="Remove", command=self.__remove_input)
         self.__remove_button.place(x=296, y=620, relwidth=0.24)
 
-        self.__clear_button = ttk.Button(self, text="Clear", command=self.__clear_inputs)
+        self.__clear_button: ttk.Button = ttk.Button(self, text="Clear", command=self.__clear_inputs)
         self.__clear_button.place(x=444, y=620, relwidth=0.24)
 
         # ______________________________________________________________________________
@@ -157,47 +166,47 @@ class Menu(ttk.Frame):
         ttk.Label(self, text="Color", font=("Lucida Console", 10)).place(x=197, y=690)
         ttk.Label(self, text="Fill color", font=("Lucida Console", 10)).place(x=394, y=690)
 
-        self.pistil_radius_entry_var = tk.IntVar()
+        self.pistil_radius_entry_var: tk.IntVar = tk.IntVar()
         self.__pistil_radius_entry = ttk.Entry(self, textvariable=self.pistil_radius_entry_var)
         self.__pistil_radius_entry.place(x=0, y=710, relwidth=0.3)
 
-        self.pistil_color_entry_var = tk.StringVar()
+        self.pistil_color_entry_var: tk.StringVar = tk.StringVar()
         self.__pistil_color_entry = ttk.Entry(self, textvariable=self.pistil_color_entry_var)
         self.__pistil_color_entry.place(x=197, y=710, relwidth=0.3)
 
-        self.pistil_fillcolor_entry_var = tk.StringVar()
+        self.pistil_fillcolor_entry_var: tk.StringVar = tk.StringVar()
         self.__pistil_fillcolor_entry = ttk.Entry(self, textvariable=self.pistil_fillcolor_entry_var)
         self.__pistil_fillcolor_entry.place(x=394, y=710, relwidth=0.3)
 
         # ______________________________________________________________________________
 
-        self.__create_flower_button = ttk.Button(self, text="Create Flower", command=self.create_flower)
+        self.__create_flower_button: ttk.Button = ttk.Button(self, text="Create Flower", command=self.create_flower)
         self.__create_flower_button.place(x=0, y=770, relwidth=0.23)
 
-        self.__export_flower_button = ttk.Button(self, text="Export Flower", command=self.__export_flower)
+        self.__export_flower_button: ttk.Button = ttk.Button(self, text="Export Flower", command=self.__export_flower)
         self.__export_flower_button.place(x=147, y=770, relwidth=0.23)
 
-        self.__import_flower_button = ttk.Button(self, text="Import Flower", command=self.__import_flower)
+        self.__import_flower_button: ttk.Button = ttk.Button(self, text="Import Flower", command=self.__import_flower)
         self.__import_flower_button.place(x=304, y=770, relwidth=0.23)
 
-        self.__save_flower_button = ttk.Button(self, text="Save Picture", command=self.__save_picture)
+        self.__save_flower_button: ttk.Button = ttk.Button(self, text="Save Picture", command=self.__save_picture)
         self.__save_flower_button.place(x=451, y=770, relwidth=0.23)
 
         # ______________________________________________________________________________
 
         self.place(x=810, y=0, width=590, relheight=1)
 
-    def __check_valid_petal_entries(self):
+    def __check_valid_petal_entries(self) -> bool:
         """
         Check if the entries have a correct value inside
         :return:
         """
-        length_val = self.__length_entry_var.get()
-        height_val = self.__height_entry_var.get()
-        color_val = self.__color_entry_var.get()
-        fillcolor_val = self.__fillcolor_entry_var.get()
-        petal_number_val = self.__length_entry_var.get()
-        lag_val = self.__height_entry_var.get()
+        length_val: int = self.__length_entry_var.get()
+        height_val: int = self.__height_entry_var.get()
+        color_val: str = self.__color_entry_var.get()
+        fillcolor_val: str = self.__fillcolor_entry_var.get()
+        petal_number_val: int = self.__length_entry_var.get()
+        lag_val: int = self.__height_entry_var.get()
         if '' not in (color_val, fillcolor_val) \
                 and (len(color_val.split(',')) and len(fillcolor_val.split(','))) == 3 \
                 and (type(length_val) and type(height_val) and type(petal_number_val) and type(lag_val)) == int:
@@ -205,14 +214,14 @@ class Menu(ttk.Frame):
         else:
             raise (ValueError("The values on the petal entries aren't correct"))
 
-    def __check_valid_pistil_entries(self):
+    def __check_valid_pistil_entries(self) -> bool:
         """
         Check if the entries have a correct value inside
         :return:
         """
-        radius_val = self.pistil_radius_entry_var.get()
-        color_val = self.pistil_color_entry_var.get()
-        fillcolor_val = self.pistil_fillcolor_entry_var.get()
+        radius_val: int = self.pistil_radius_entry_var.get()
+        color_val: str = self.pistil_color_entry_var.get()
+        fillcolor_val: str = self.pistil_fillcolor_entry_var.get()
 
         if '' not in (color_val, fillcolor_val) \
                 and type(radius_val) == int:
@@ -220,7 +229,7 @@ class Menu(ttk.Frame):
         else:
             raise (ValueError("The values on the pistil entries aren't correct"))
 
-    def __add_input(self):
+    def __add_input(self) -> None:
         """
         Add the item to the tree view
         :return:
@@ -231,12 +240,12 @@ class Menu(ttk.Frame):
                 self.__color_entry_var.get(), self.__fillcolor_entry_var.get(), self.__petal_number_entry_var.get(),
                 self.__lag_entry_var.get()))
 
-    def __modify_input(self):
+    def __modify_input(self) -> None:
         """
         Modify the selected item in the tree view
         :return:
         """
-        focussed = self.layers_table.focus()
+        focussed: str = self.layers_table.focus()
         if focussed:
             if self.__check_valid_petal_entries():
                 self.layers_table.item(focussed, values=(
@@ -245,7 +254,7 @@ class Menu(ttk.Frame):
                     self.__color_entry_var.get(), self.__fillcolor_entry_var.get(), self.__petal_number_entry_var.get(),
                     self.__lag_entry_var.get()))
 
-    def __remove_input(self):
+    def __remove_input(self) -> None:
         """
         Remove the selected item in the tree view
         :return:
@@ -254,7 +263,7 @@ class Menu(ttk.Frame):
             self.layers_table.delete(self.layers_table.focus())
             self.__actualize_table_ids()
 
-    def __clear_inputs(self):
+    def __clear_inputs(self) -> None:
         """
         Clear the treeview
         :return:
@@ -262,7 +271,7 @@ class Menu(ttk.Frame):
         for child in self.layers_table.get_children():
             self.layers_table.delete(child)
 
-    def __actualize_table_ids(self):
+    def __actualize_table_ids(self) -> None:
         """
         Actualize the tree view ids
         :return:
@@ -272,7 +281,7 @@ class Menu(ttk.Frame):
             self.layers_table.item(child, values=(
                 i, child_item[1], child_item[2], child_item[3], child_item[4], child_item[5], child_item[6]))
 
-    def create_flower(self):
+    def create_flower(self) -> None:
         """
         Create the flower
         :return:
@@ -283,8 +292,12 @@ class Menu(ttk.Frame):
         if self.__check_valid_pistil_entries():
             create_flower(self)
 
-    def __export_flower(self):
-        folder_selected = filedialog.askdirectory()
+    def __export_flower(self) -> None:
+        """
+        Export the flower settings as a json file
+        :return:
+        """
+        folder_selected: str = filedialog.askdirectory()
         with open(f"{folder_selected}/export.json", "w+") as f:
             f.write("{")
             f.write(f"\n\t\"layers\": {len(self.layers_table.get_children())},")
@@ -301,9 +314,13 @@ class Menu(ttk.Frame):
             f.write("\n}")
             f.close()
 
-    def __import_flower(self):
-        file_selected = filedialog.askopenfilename()
-        data = json.loads(open(file_selected).read())
+    def __import_flower(self) -> None:
+        """
+        Import the flower settings from a json file
+        :return:
+        """
+        file_selected: str = filedialog.askopenfilename()
+        data: any = json.loads(open(file_selected).read())
 
         for i in range(data["layers"]):
             self.layers_table.insert(parent='', index="end", text='', values=data[f"layer_{i}"])
@@ -312,13 +329,17 @@ class Menu(ttk.Frame):
         self.pistil_color_entry_var.set(data["color"])
         self.pistil_fillcolor_entry_var.set(data["fillcolor"])
 
-    def __save_picture(self):
+    def __save_picture(self) -> None:
+        """
+        Take a screenshot of the turtle canvas
+        :return:
+        """
         folder_selected = filedialog.askdirectory()
-        x0 = self.__parent.winfo_rootx() + self.__turtle_screen.getcanvas().winfo_x() + 2
-        y0 = self.__parent.winfo_rooty() + self.__turtle_screen.getcanvas().winfo_y() + 2
-        x1 = x0 + self.__turtle_screen.getcanvas().winfo_width() - 4
-        y1 = y0 + self.__turtle_screen.getcanvas().winfo_height()
-        screenshot = ImageGrab.grab(bbox=(x0, y0, x1, y1))
+        x0: int = self.__parent.winfo_rootx() + self.__turtle_screen.getcanvas().winfo_x() + 2
+        y0: int = self.__parent.winfo_rooty() + self.__turtle_screen.getcanvas().winfo_y() + 2
+        x1: int = x0 + self.__turtle_screen.getcanvas().winfo_width() - 4
+        y1: int = y0 + self.__turtle_screen.getcanvas().winfo_height()
+        screenshot: Image = ImageGrab.grab(bbox=(x0, y0, x1, y1))
         screenshot.save(f"{folder_selected}/turtle_screenshot.png")
 
 

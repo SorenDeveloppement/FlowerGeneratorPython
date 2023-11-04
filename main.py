@@ -1,11 +1,10 @@
 import math
 import json
-import os
 import turtle as t
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
-from PIL import Image
+from PIL import ImageGrab
 
 
 # TODO: Create an export flower function that return a base64 string with whole of the flower settings
@@ -56,6 +55,7 @@ class Menu(ttk.Frame):
         super().__init__(parent)
 
         self.tu = tu
+        self.__parent = parent
         self.__turtle_screen = screen
         self.__layer_values: list[list[int | str]] = []
 
@@ -314,12 +314,12 @@ class Menu(ttk.Frame):
 
     def __save_picture(self):
         folder_selected = filedialog.askdirectory()
-        ps_file = f"{folder_selected}/turtle_image.ps"
-        canvas = self.__turtle_screen.getcanvas()
-        canvas.postscript(file=ps_file)
-        ps_image = Image.open(ps_file)
-        ps_image.save(f"{folder_selected}/turtle_image.png")
-        os.remove(ps_file)
+        x0 = self.__parent.winfo_rootx() + self.__turtle_screen.getcanvas().winfo_x() + 2
+        y0 = self.__parent.winfo_rooty() + self.__turtle_screen.getcanvas().winfo_y() + 2
+        x1 = x0 + self.__turtle_screen.getcanvas().winfo_width() - 4
+        y1 = y0 + self.__turtle_screen.getcanvas().winfo_height()
+        screenshot = ImageGrab.grab(bbox=(x0, y0, x1, y1))
+        screenshot.save(f"{folder_selected}/turtle_screenshot.png")
 
 
 def flower_petal(tu: t.RawTurtle, length: int, height: int, color: tuple[int, int, int] = (0, 0, 0),

@@ -53,6 +53,7 @@ class Menu(ttk.Frame):
     def __init__(self, parent: tk.Tk, tu: t.RawTurtle) -> None:
         super().__init__(parent)
 
+        self.__tu = tu
         self.__layer_values: list[list[int | str]] = []
 
         ttk.Label(self, text="Flower settings", font=("Lucida Console", 20)).place(x=0, y=0)
@@ -140,9 +141,33 @@ class Menu(ttk.Frame):
 
         # ______________________________________________________________________________
 
+        ttk.Label(self, text="Pistil settings:", font=("Lucida Console", 15)).place(x=0, y=630)
+
+        ttk.Label(self, text="Radius", font=("Lucida Console", 10)).place(x=0, y=660)
+        ttk.Label(self, text="Color", font=("Lucida Console", 10)).place(x=197, y=660)
+        ttk.Label(self, text="Fill color", font=("Lucida Console", 10)).place(x=394, y=660)
+
+        self.__pistil_radius_entry_var = tk.IntVar()
+        self.__pistil_radius_entry = ttk.Entry(self, textvariable=self.__pistil_radius_entry_var)
+        self.__pistil_radius_entry.place(x=0, y=680, relwidth=0.3)
+
+        self.__pistil_color_entry_var = tk.StringVar()
+        self.__pistil_color_entry = ttk.Entry(self, textvariable=self.__pistil_color_entry_var)
+        self.__pistil_color_entry.place(x=197, y=680, relwidth=0.3)
+
+        self.__pistil_fillcolor_entry_var = tk.StringVar()
+        self.__pistil_fillcolor_entry = ttk.Entry(self, textvariable=self.__pistil_fillcolor_entry_var)
+        self.__pistil_fillcolor_entry.place(x=394, y=680, relwidth=0.3)
+
+        # ______________________________________________________________________________
+
+        self.__create_flower_button = ttk.Button(self, text="Create Flower", command=self.create_flower)
+
+        # ______________________________________________________________________________
+
         self.place(x=810, y=0, width=590, relheight=1)
 
-    def __check_valid_entries(self):
+    def __check_valid_petal_entries(self):
         """
         Check if the entries have a correct value inside
         :return:
@@ -158,14 +183,29 @@ class Menu(ttk.Frame):
                 and (type(length_val) and type(height_val) and type(petal_number_val) and type(lag_val)) == int:
             return True
         else:
-            raise (ValueError("The values on the entries aren't correct"))
+            raise (ValueError("The values on the petal entries aren't correct"))
+
+    def __check_valid_pistil_entries(self):
+        """
+        Check if the entries have a correct value inside
+        :return:
+        """
+        radius_val = self.__pistil_radius_entry_var.get()
+        color_val = self.__pistil_color_entry_var.get()
+        fillcolor_val = self.__pistil_fillcolor_entry_var.get()
+
+        if '' not in (color_val, fillcolor_val) \
+                and type(radius_val) == int:
+            return True
+        else:
+            raise (ValueError("The values on the pistil entries aren't correct"))
 
     def __add_input(self):
         """
         Add the item to the tree view
         :return:
         """
-        if self.__check_valid_entries():
+        if self.__check_valid_petal_entries():
             self.__layers_table.insert(parent='', index="end", text='', values=(
                 len(self.__layers_table.get_children()), self.__length_entry_var.get(), self.__height_entry_var.get(),
                 self.__color_entry_var.get(), self.__fillcolor_entry_var.get(), self.__petal_number_entry_var.get(),
@@ -178,7 +218,7 @@ class Menu(ttk.Frame):
         """
         focussed = self.__layers_table.focus()
         if focussed:
-            if self.__check_valid_entries():
+            if self.__check_valid_petal_entries():
                 self.__layers_table.item(focussed, values=(
                     self.__layers_table.item(focussed)["values"][0], self.__length_entry_var.get(),
                     self.__height_entry_var.get(),
@@ -211,6 +251,10 @@ class Menu(ttk.Frame):
             child_item = self.__layers_table.item(child)["values"]
             self.__layers_table.item(child, values=(
                 i, child_item[1], child_item[2], child_item[3], child_item[4], child_item[5], child_item[6]))
+
+    def create_flower(self):
+        if self.__check_valid_pistil_entries():
+            create_flower(self.__tu)
 
 
 def flower_petal(tu: t.RawTurtle, length: int, height: int, color: tuple[int, int, int] = (0, 0, 0),
@@ -313,8 +357,5 @@ def create_flower(tu: t.RawTurtle) -> None:
     flower_pistil(tu, 15, (255, 102, 255), (250, 197, 250))
 
 
-# create_flower()
-FlowerApp()
-
-# Create the mainloop of the window
-# t.mainloop()
+if __name__ == '__main__':
+    FlowerApp()

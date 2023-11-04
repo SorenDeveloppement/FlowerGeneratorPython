@@ -1,7 +1,11 @@
 import math
+import json
+import os
 import turtle as t
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog
+from PIL import Image
 
 
 # TODO: Create an export flower function that return a base64 string with whole of the flower settings
@@ -18,7 +22,7 @@ class FlowerApp(tk.Tk):
         self.turtle = self.turtle_frame.get_turtle()
         self.turtle_screen = self.turtle_frame.get_turtle_screen()
 
-        self.menu = Menu(self, self.turtle)
+        self.menu = Menu(self, self.turtle, self.turtle_screen)
 
         self.set_turtle_settings()
 
@@ -48,10 +52,11 @@ class TurtleFrame(ttk.Frame):
 
 
 class Menu(ttk.Frame):
-    def __init__(self, parent: tk.Tk, tu: t.RawTurtle) -> None:
+    def __init__(self, parent: tk.Tk, tu: t.RawTurtle, screen: t.TurtleScreen) -> None:
         super().__init__(parent)
 
         self.tu = tu
+        self.__turtle_screen = screen
         self.__layer_values: list[list[int | str]] = []
 
         ttk.Label(self, text="Flower settings", font=("Lucida Console", 20)).place(x=0, y=0)
@@ -167,13 +172,16 @@ class Menu(ttk.Frame):
         # ______________________________________________________________________________
 
         self.__create_flower_button = ttk.Button(self, text="Create Flower", command=self.create_flower)
-        self.__create_flower_button.place(x=0, y=770, relwidth=0.3)
+        self.__create_flower_button.place(x=0, y=770, relwidth=0.23)
 
-        self.__create_flower_button = ttk.Button(self, text="Export Flower", command=self.create_flower)
-        self.__create_flower_button.place(x=197, y=770, relwidth=0.3)
+        self.__export_flower_button = ttk.Button(self, text="Export Flower", command=self.__export_flower)
+        self.__export_flower_button.place(x=147, y=770, relwidth=0.23)
 
-        self.__create_flower_button = ttk.Button(self, text="Import Flower", command=self.create_flower)
-        self.__create_flower_button.place(x=394, y=770, relwidth=0.3)
+        self.__import_flower_button = ttk.Button(self, text="Import Flower", command=self.__import_flower)
+        self.__import_flower_button.place(x=304, y=770, relwidth=0.23)
+
+        self.__save_flower_button = ttk.Button(self, text="Save Picture", command=self.__save_picture)
+        self.__save_flower_button.place(x=451, y=770, relwidth=0.23)
 
         # ______________________________________________________________________________
 
@@ -274,6 +282,44 @@ class Menu(ttk.Frame):
         self.tu.clear()
         if self.__check_valid_pistil_entries():
             create_flower(self)
+
+    def __export_flower(self):
+        folder_selected = filedialog.askdirectory()
+        with open(f"{folder_selected}/export.json", "w+") as f:
+            f.write("{")
+            f.write(f"\n\t\"layers\": {len(self.layers_table.get_children())},")
+
+            for i, child in enumerate(self.layers_table.get_children()):
+                f.write(f'\n\t"layer_{i}": ')
+                f.write(str(self.layers_table.item(child)["values"]).replace("'", '"'))
+                f.write(",")
+
+            f.write(f'\n\t"radius": {str(self.pistil_radius_entry_var.get())},')
+            f.write(f'\n\t"color": "{str(self.pistil_color_entry_var.get())}",')
+            f.write(f'\n\t"fillcolor": "{str(self.pistil_fillcolor_entry_var.get())}"')
+
+            f.write("\n}")
+            f.close()
+
+    def __import_flower(self):
+        file_selected = filedialog.askopenfilename()
+        data = json.loads(open(file_selected).read())
+
+        for i in range(data["layers"]):
+            self.layers_table.insert(parent='', index="end", text='', values=data[f"layer_{i}"])
+
+        self.pistil_radius_entry_var.set(data["radius"])
+        self.pistil_color_entry_var.set(data["color"])
+        self.pistil_fillcolor_entry_var.set(data["fillcolor"])
+
+    def __save_picture(self):
+        folder_selected = filedialog.askdirectory()
+        ps_file = f"{folder_selected}/turtle_image.ps"
+        canvas = self.__turtle_screen.getcanvas()
+        canvas.postscript(file=ps_file)
+        ps_image = Image.open(ps_file)
+        ps_image.save(f"{folder_selected}/turtle_image.png")
+        os.remove(ps_file)
 
 
 def flower_petal(tu: t.RawTurtle, length: int, height: int, color: tuple[int, int, int] = (0, 0, 0),

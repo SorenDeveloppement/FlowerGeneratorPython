@@ -112,6 +112,8 @@ class Menu(ttk.Frame):
         self.layers_table.column("lag", anchor=tk.CENTER, width=50)
         self.layers_table.heading("lag", text="Lag °", anchor=tk.CENTER)
 
+        self.tree_scroll.config(command=self.layers_table.yview)
+
         self.__layer_settings_frame.place(x=0, y=105, relwidth=1, relheight=1 / 2)
 
         # ______________________________________________________________________________
@@ -356,7 +358,7 @@ class Menu(ttk.Frame):
         Import the flower settings from a json file
         :return:
         """
-        file_selected: str = filedialog.askopenfilename()
+        file_selected: str = filedialog.askopenfilename(filetypes=[('JSON Files', '*.json')])
         data: any = json.loads(open(file_selected).read())
 
         for i in range(data["layers"]):

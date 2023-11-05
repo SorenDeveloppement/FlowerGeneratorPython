@@ -2,8 +2,7 @@ import math
 import json
 import turtle as t
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
+from tkinter import ttk, filedialog, messagebox
 from PIL import ImageGrab, Image
 
 
@@ -69,6 +68,10 @@ class Menu(ttk.Frame):
         self.__layer_values: list[list[int | str]] = []
 
         ttk.Label(self, text="Flower settings", font=("Lucida Console", 20)).place(x=0, y=0)
+
+        self.__help_text = ttk.Label(self, text="❔", font=("Lucida Console", 20))
+        self.__help_text.place(x=550, y=5)
+        self.__help_text.bind("<Button-1>", self.__open_help_panel)
 
         # ___________________________________Tree View___________________________________
         ttk.Label(self, text="Layer settings:", font=("Lucida Console", 15)).place(x=0, y=55)
@@ -196,6 +199,34 @@ class Menu(ttk.Frame):
 
         self.place(x=810, y=0, width=590, relheight=1)
 
+    @staticmethod
+    def __open_help_panel(callback) -> None:
+        info_win = tk.Tk()
+        info_win.title("Help Window")
+        info_win.geometry("600x490")
+        info_win.resizable(False, False)
+        info_win.attributes('-topmost', 'true')
+
+        ttk.Label(info_win, text="How to use the application ?", font=("Lucida Console", 20)).place(x=0, y=0)
+        ttk.Label(info_win, text="Inputs:\n\nWhen an entry content is equal to 0, you need to write an integer.\n"
+                                 "Otherwise, you need to write a RGB color (ex: 255,255,255).",
+                  font=("Lucida Console", 11)).place(x=0, y=50)
+        ttk.Label(info_win, text="Tree view:\n\nThe \"Add\" button append the tree view when all the entry\nare correct"
+                                 ". Else, an error message will pop up.\nThe \"Remove\" button delete the selected "
+                                 "tree view row.\nThe \"Modify\" button will change the content of the selected row by"
+                                 "\nthe new entries content.\nFinally, the \"Clear\" button will "
+                                 "delete all of the rows.",
+                  font=("Lucida Console", 11)).place(x=0, y=150)
+        ttk.Label(info_win, text="Flower:\n\nThe \"Create Flower\" button will create the turtle flower draw.\n"
+                                 "The \"Export Flower\" button will create a export.json\nfile in the selected "
+                                 "directory which contains all the flower\nsettings.\nThe \"Import Flower\" button will"
+                                 " import the whole flower\nsettings of the selected json file.\nThe \"Save Picture\" "
+                                 "button will take a screenshot of the turtle\nflower draw and save it in the selected "
+                                 "directory.",
+                  font=("Lucida Console", 11)).place(x=0, y=310)
+
+        info_win.mainloop()
+
     def __check_valid_petal_entries(self) -> bool:
         """
         Check if the entries have a correct value inside
@@ -212,6 +243,9 @@ class Menu(ttk.Frame):
                 and (type(length_val) and type(height_val) and type(petal_number_val) and type(lag_val)) == int:
             return True
         else:
+            messagebox.showerror("Input Error",
+                                 "The values on the petal entries aren't correct.\n"
+                                 "Click on the question mark button to see help")
             raise (ValueError("The values on the petal entries aren't correct"))
 
     def __check_valid_pistil_entries(self) -> bool:
@@ -227,6 +261,9 @@ class Menu(ttk.Frame):
                 and type(radius_val) == int:
             return True
         else:
+            messagebox.showerror("Input Error",
+                                 "The values on the pistil entries aren't correct.\n"
+                                 "Click on the question mark button to see help")
             raise (ValueError("The values on the pistil entries aren't correct"))
 
     def __add_input(self) -> None:

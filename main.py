@@ -336,53 +336,62 @@ class Menu(ttk.Frame):
         Export the flower settings as a json file
         :return:
         """
-        folder_selected: str = filedialog.askdirectory()
-        with open(f"{folder_selected}/export.json", "w+") as f:
-            f.write("{")
-            f.write(f"\n\t\"layers\": {len(self.layers_table.get_children())},")
+        try:
+            folder_selected: str = filedialog.askdirectory()
+            with open(f"{folder_selected}/export.json", "w+") as f:
+                f.write("{")
+                f.write(f"\n\t\"layers\": {len(self.layers_table.get_children())},")
 
-            for i, child in enumerate(self.layers_table.get_children()):
-                f.write(f'\n\t"layer_{i}": ')
-                f.write(str(self.layers_table.item(child)["values"]).replace("'", '"'))
-                f.write(",")
+                for i, child in enumerate(self.layers_table.get_children()):
+                    f.write(f'\n\t"layer_{i}": ')
+                    f.write(str(self.layers_table.item(child)["values"]).replace("'", '"'))
+                    f.write(",")
 
-            f.write(f'\n\t"radius": {str(self.pistil_radius_entry_var.get())},')
-            f.write(f'\n\t"color": "{str(self.pistil_color_entry_var.get())}",')
-            f.write(f'\n\t"fillcolor": "{str(self.pistil_fillcolor_entry_var.get())}"')
+                f.write(f'\n\t"radius": {str(self.pistil_radius_entry_var.get())},')
+                f.write(f'\n\t"color": "{str(self.pistil_color_entry_var.get())}",')
+                f.write(f'\n\t"fillcolor": "{str(self.pistil_fillcolor_entry_var.get())}"')
 
-            f.write("\n}")
-            f.close()
+                f.write("\n}")
+                f.close()
+        except IOError:
+            print("Error while exporting data")
 
     def __import_flower(self) -> None:
         """
         Import the flower settings from a json file
         :return:
         """
-        file_selected: str = filedialog.askopenfilename(filetypes=[('JSON Files', '*.json')])
-        data: any = json.loads(open(file_selected).read())
+        try:
+            file_selected: str = filedialog.askopenfilename(filetypes=[('JSON Files', '*.json')])
+            data: any = json.loads(open(file_selected).read())
 
-        for item in self.layers_table.get_children():
-            self.layers_table.delete(item)
+            for item in self.layers_table.get_children():
+                self.layers_table.delete(item)
 
-        for i in range(data["layers"]):
-            self.layers_table.insert(parent='', index="end", text='', values=data[f"layer_{i}"])
+            for i in range(data["layers"]):
+                self.layers_table.insert(parent='', index="end", text='', values=data[f"layer_{i}"])
 
-        self.pistil_radius_entry_var.set(data["radius"])
-        self.pistil_color_entry_var.set(data["color"])
-        self.pistil_fillcolor_entry_var.set(data["fillcolor"])
+            self.pistil_radius_entry_var.set(data["radius"])
+            self.pistil_color_entry_var.set(data["color"])
+            self.pistil_fillcolor_entry_var.set(data["fillcolor"])
+        except IOError:
+            print("Error while importing data")
 
     def __save_picture(self) -> None:
         """
         Take a screenshot of the turtle canvas
         :return:
         """
-        folder_selected = filedialog.askdirectory()
-        x0: int = self.__parent.winfo_rootx() + self.__turtle_screen.getcanvas().winfo_x() + 2
-        y0: int = self.__parent.winfo_rooty() + self.__turtle_screen.getcanvas().winfo_y() + 2
-        x1: int = x0 + self.__turtle_screen.getcanvas().winfo_width() - 4
-        y1: int = y0 + self.__turtle_screen.getcanvas().winfo_height()
-        screenshot: Image = ImageGrab.grab(bbox=(x0, y0, x1, y1))
-        screenshot.save(f"{folder_selected}/turtle_screenshot.png")
+        try:
+            folder_selected = filedialog.askdirectory()
+            x0: int = self.__parent.winfo_rootx() + self.__turtle_screen.getcanvas().winfo_x() + 2
+            y0: int = self.__parent.winfo_rooty() + self.__turtle_screen.getcanvas().winfo_y() + 2
+            x1: int = x0 + self.__turtle_screen.getcanvas().winfo_width() - 4
+            y1: int = y0 + self.__turtle_screen.getcanvas().winfo_height()
+            screenshot: Image = ImageGrab.grab(bbox=(x0, y0, x1, y1))
+            screenshot.save(f"{folder_selected}/turtle_screenshot.png")
+        except IOError:
+            print("Error while saving screenshot")
 
 
 def flower_petal(tu: t.RawTurtle, length: int, height: int, color: tuple[int, int, int] = (0, 0, 0),

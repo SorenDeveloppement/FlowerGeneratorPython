@@ -1,7 +1,7 @@
 # Flower Generator
 
 ## Qu'est ce que c'est ?
-L'application Flower Generator est un projet de NSI qui permet de créer des fleurs en prenant différentes valuers. L'application utilise les librairies `math`, `turtle`, `tkinter`, `json`, `PIL`'
+L'application Flower Generator est un projet de NSI qui permet de créer des fleurs en prenant différentes valuers. L'application utilise les librairies `math`, `turtle`, `tkinter`, `json`, `PIL`
 
 ## Les valeurs
 - Length: longueur du pétal en pixel

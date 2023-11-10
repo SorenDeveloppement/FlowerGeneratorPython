@@ -361,6 +361,9 @@ class Menu(ttk.Frame):
         file_selected: str = filedialog.askopenfilename(filetypes=[('JSON Files', '*.json')])
         data: any = json.loads(open(file_selected).read())
 
+        for item in self.layers_table.get_children():
+            self.layers_table.delete(item)
+
         for i in range(data["layers"]):
             self.layers_table.insert(parent='', index="end", text='', values=data[f"layer_{i}"])
 

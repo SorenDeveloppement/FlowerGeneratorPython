@@ -399,7 +399,7 @@ def flower_petal(tu: t.RawTurtle, length: int, height: int, color: tuple[int, in
     # Calculation of the radius : (c² + t²) / 2 * t
     # Where c is the half of the chord length and t is the length of the arrow of the arc
     rayon: float = ((length / 2) ** 2 + height ** 2) / (2 * height)
-    # Calculation of the angle : 2 * asin(/R)
+    # Calculation of the angle : 2 * asin(c/R)
     # Where c is the half of the chord length and R the radius of the circle
     angle: float = math.degrees(2 * math.asin((length / 2) / rayon))
     tu.pendown()

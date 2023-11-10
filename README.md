@@ -24,4 +24,9 @@ Toutes les fonctions ayants besoins de sauvegarder ou exporter des données dema
 [Arc de cercle](https://fr.wikipedia.org/wiki/Arc_de_cercle)
 
 ## Les formules
-$$4*4$$
+
+Calcule du rayon du cercle en conaissant la longueur de la corde $2c$ et la hauteur de la flèche $t$:
+$$\frac{c^2 + t^2}{2t}$$
+
+Calcul de l'angle au centre en conaissant la longueur de la corde $2c$ et le rayon $R$:
+$$2 * asin(\frac{c}{R})$$
